@@ -35,12 +35,23 @@ async function run() {
             res.send(result)
         })
 
+        app.get('/toys', async (req, res) => {
+            // console.log(req.query.email)
+            let query = {};
+            if (req.query?.email) {
+                query = { email: req.query.email }
+            }
+            const result = await toyCollection.find(query).toArray();
+            res.send(result)
+        })
+
         app.post('/toy', async (req, res) => {
             const newToy = req.body;
             console.log(newToy);
             const result = await toyCollection.insertOne(newToy);
             res.send(result)
-        })
+        });
+
 
 
         // Send a ping to confirm a successful connection
