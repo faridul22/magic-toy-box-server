@@ -43,6 +43,13 @@ async function run() {
             }
             const result = await toyCollection.find(query).toArray();
             res.send(result)
+        });
+
+        app.get('/toys/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await toyCollection.findOne(query);
+            res.send(result)
         })
 
         app.post('/toy', async (req, res) => {
@@ -51,6 +58,22 @@ async function run() {
             const result = await toyCollection.insertOne(newToy);
             res.send(result)
         });
+
+        app.put('/toys/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedToy = req.body;
+            const toy = {
+                $set: {
+                    price: updatedToy.price,
+                    quantity: updatedToy.quantity,
+                    description: updatedToy.description,
+                }
+            }
+            const result = await toyCollection.updateOne(filter, toy, options);
+            res.send(result);
+        })
 
         app.delete('/toys/:id', async (req, res) => {
             const id = req.params.id;
