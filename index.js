@@ -28,10 +28,10 @@ async function run() {
         client.connect();
 
         const toyCollection = client.db("toyDB").collection('toy');
-
+        const limit = 20;
         app.get('/toy', async (req, res) => {
             const cursor = toyCollection.find();
-            const result = await cursor.toArray();
+            const result = await cursor.limit(limit).toArray();
             res.send(result)
         })
 
@@ -52,7 +52,7 @@ async function run() {
             res.send(result)
         })
 
-        app.get('/allToy/:text', async (req, res) => {
+        app.get('/categoryToy/:text', async (req, res) => {
             // console.log(req.params.text)
             if (req.params.text == "sportsCar" || req.params.text == "bus" || req.params.text == "truck") {
                 const result = await toyCollection.find({ category: req.params.text }).toArray();
