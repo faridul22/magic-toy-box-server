@@ -29,6 +29,26 @@ async function run() {
 
         const toyCollection = client.db("toyDB").collection('toy');
         const limit = 20;
+        //------------------------------------------
+
+        const indexKeys = { toyName: 1 };
+        const indexOptions = { name: "titleCategory" };
+        const result = await toyCollection.createIndex(indexKeys, indexOptions);
+        console.log(result);
+
+        app.get("/getToyNameByText/:text", async (req, res) => {
+            const searchText = req.params.text;
+            const result = await toyCollection
+                .find({
+                    $or: [
+                        { toyName: { $regex: searchText, $options: "i" } },
+                    ],
+                })
+                .toArray();
+            res.send(result);
+        });
+
+        //-----------------------------------------------
         app.get('/toy', async (req, res) => {
             const cursor = toyCollection.find();
             const result = await cursor.limit(limit).toArray();
