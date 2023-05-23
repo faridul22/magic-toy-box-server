@@ -25,16 +25,13 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        client.connect();
+        // client.connect();
 
         const toyCollection = client.db("toyDB").collection('toy');
-        const limit = 20;
+
         //------------------------------------------
 
-        const indexKeys = { toyName: 1 };
-        const indexOptions = { name: "titleCategory" };
-        const result = await toyCollection.createIndex(indexKeys, indexOptions);
-        console.log(result);
+
 
         app.get("/getToyNameByText/:text", async (req, res) => {
             const searchText = req.params.text;
@@ -50,6 +47,7 @@ async function run() {
 
         //-----------------------------------------------
         app.get('/toy', async (req, res) => {
+            const limit = 20;
             const cursor = toyCollection.find();
             const result = await cursor.limit(limit).toArray();
             res.send(result)
